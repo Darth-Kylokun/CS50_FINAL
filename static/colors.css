@@ -1,0 +1,363 @@
+.bg-blue-100 {
+    background-color: #CFE2FF;
+}
+
+.bg-blue-200 {
+    background-color: #9EC5FE;
+}
+
+.bg-blue-300 {
+    background-color: #3D8BFD;
+}
+
+.bg-blue-400 {
+    background-color: #3D8BFD;
+}
+
+.bg-blue-500 {
+    background-color: #0d6efd;
+}
+
+.bg-blue-600 {
+    background-color: #0A58CA;
+}
+
+.bg-blue-700 {
+    background-color: #084298;
+}
+
+.bg-blue-800 {
+    background-color: #052C65;
+}
+
+.bg-blue-900 {
+    background-color: #031633;
+}
+
+.blue-100 {
+    color: #CFE2FF;
+}
+
+.blue-200 {
+    color: #9EC5FE;
+}
+
+.blue-300 {
+    color: #3D8BFD;
+}
+
+.blue-400 {
+    color: #3D8BFD;
+}
+
+.blue-500 {
+    color: #0d6efd;
+}
+
+.blue-600 {
+    color: #0A58CA;
+}
+
+.blue-700 {
+    color: #084298;
+}
+
+.blue-800 {
+    color: #052C65;
+}
+
+.blue-900 {
+    color: #031633;
+}
+
+
+.bg-indigo-100 {
+    background-color: #E0CFFC;
+}
+
+.bg-indigo-200 {
+    background-color: #C29FFA;
+}
+
+.bg-indigo-300 {
+    background-color: #8540F5;
+}
+
+.bg-indigo-400 {
+    background-color: #8540F5;
+}
+
+.bg-indigo-500 {
+    background-color: #6610F2;
+}
+
+.bg-indigo-600 {
+    background-color: #520DC2;
+}
+
+.bg-indigo-700 {
+    background-color: #3D0A91;
+}
+
+.bg-indigo-800 {
+    background-color: #290661;
+}
+
+.bg-indigo-900 {
+    background-color: #140330;
+}
+
+.indigo-100 {
+    color: #E0CFFC;
+}
+
+.indigo-200 {
+    color: #C29FFA;
+}
+
+.indigo-300 {
+    color: #8540F5;
+}
+
+.indigo-400 {
+    color: #8540F5;
+}
+
+.indigo-500 {
+    color: #6610F2;
+}
+
+.indigo-600 {
+    color: #520DC2;
+}
+
+.indigo-700 {
+    color: #3D0A91;
+}
+
+.indigo-800 {
+    color: #290661;
+}
+
+.indigo-900 {
+    color: #140330;
+}
+
+
+.bg-purple-100 {
+    background-color: #E2D9F3;
+}
+
+.bg-purple-200 {
+    background-color: #C5B3E6;
+}
+
+.bg-purple-300 {
+    background-color: #A98EDA;
+}
+
+.bg-purple-400 {
+    background-color: #8C68CD;
+}
+
+.bg-purple-500 {
+    background-color: #6F42C1;
+}
+
+.bg-purple-600 {
+    background-color: #59359A;
+}
+
+.bg-purple-700 {
+    background-color: #432874;
+}
+
+.bg-purple-800 {
+    background-color: #2C1A4D;
+}
+
+.bg-purple-900 {
+    background-color: #160D27;
+}
+
+.purple-100 {
+    color: #E2D9F3;
+}
+
+.purple-200 {
+    color: #C5B3E6;
+}
+
+.purple-300 {
+    color: #A98EDA;
+}
+
+.purple-400 {
+    color: #8C68CD;
+}
+
+.purple-500 {
+    color: #6F42C1;
+}
+
+.purple-600 {
+    color: #59359A;
+}
+
+.purple-700 {
+    color: #432874;
+}
+
+.purple-800 {
+    color: #2C1A4D;
+}
+
+.purple-900 {
+    color: #160D27;
+}
+
+
+.bg-pink-100 {
+    background-color: #F7D6E6;
+}
+
+.bg-pink-200 {
+    background-color: #EFADCE;
+}
+
+.bg-pink-300 {
+    background-color: #E685B5;
+}
+
+.bg-pink-400 {
+    background-color: #DE5C9D;
+}
+
+.bg-pink-500 {
+    background-color: #AB296A;
+}
+
+.bg-pink-600 {
+    background-color: #AB296A;
+}
+
+.bg-pink-700 {
+    background-color: #801F4F;
+}
+
+.bg-pink-800 {
+    background-color: #561435;
+}
+
+.bg-pink-900 {
+    background-color: #2B0A1A;
+}
+
+.pink-100 {
+    color: #F7D6E6;
+}
+
+.pink-200 {
+    color: #EFADCE;
+}
+
+.pink-300 {
+    color: #E685B5;
+}
+
+.pink-400 {
+    color: #DE5C9D;
+}
+
+.pink-500 {
+    color: #AB296A;
+}
+
+.pink-600 {
+    color: #AB296A;
+}
+
+.pink-700 {
+    color: #801F4F;
+}
+
+.pink-800 {
+    color: #561435;
+}
+
+.pink-900 {
+    color: #2B0A1A;
+}
+
+
+.bg-red-100 {
+    background-color: #F8D7DA;
+}
+
+.bg-red-200 {
+    background-color: #F1AEB5;
+}
+
+.bg-red-300 {
+    background-color: #EA868F;
+}
+
+.bg-red-400 {
+    background-color: #E35D6A;
+}
+
+.bg-red-500 {
+    background-color: #DC3545;
+}
+
+.bg-red-600 {
+    background-color: #B02A37;
+}
+
+.bg-red-700 {
+    background-color: #842029;
+}
+
+.bg-red-800 {
+    background-color: #58151C;
+}
+
+.bg-red-900 {
+    background-color: #2C0B0E;
+}
+
+.red-100 {
+    color: #F8D7DA;
+}
+
+.red-200 {
+    color: #F1AEB5;
+}
+
+.red-300 {
+    color: #EA868F;
+}
+
+.red-400 {
+    color: #E35D6A;
+}
+
+.red-500 {
+    color: #DC3545;
+}
+
+.red-600 {
+    color: #B02A37;
+}
+
+.red-700 {
+    color: #842029;
+}
+
+.red-800 {
+    color: #58151C;
+}
+
+.red-900 {
+    color: #2C0B0E;
+}

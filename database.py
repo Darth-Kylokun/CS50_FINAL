@@ -14,7 +14,7 @@ class Users(Base):
     hash = Column(String, nullable=False)
     salt = Column(String, nullable=False)
     email = Column(String, nullable=False)
-    creation = Column(DateTime, nullable=False, deault=func.)
+    creation = Column(DateTime, nullable=False, default=func.current_timestamp())
 
 class Posts(Base):
     __tablename__ = "posts"
@@ -23,17 +23,17 @@ class Posts(Base):
     user_id = Column(Integer, ForeignKey('users.id'))
     content = Column(String(255), nullable=False)
     likes = Column(Integer, nullable=False, default=0)
-    creation = Column(DateTime, nullable=False, default=func.now())
+    creation = Column(DateTime, nullable=False, default=func.current_timestamp())
     user = relationship("Users", back_populates="posts")
 
 class Comments(Base):
     __tablename__ = "comments"
 
     id = Column(Integer, primary_key=True)
-    post_id = Column(Intger, ForeignKey('posts.id'))
+    post_id = Column(Integer, ForeignKey('posts.id'))
     content = Column(String(255), nullable=False)
-    likes = Column(Intger, nullable=False, default=0)
-    creation = Column(DateTime, nullable=False, default=func.now())
+    likes = Column(Integer, nullable=False, default=0)
+    creation = Column(DateTime, nullable=False, default=func.current_timestamp())
     post = relationship("Posts", back_populates="comments")
 
 Users.posts = relationship("Posts", order_by=Posts.id, back_populates="user")

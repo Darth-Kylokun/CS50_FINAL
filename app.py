@@ -1,11 +1,17 @@
-from flask import Flask, session, render_template, request
+from flask import Flask, session, render_template, request, _app_ctx_stack
+from flask_cors import CORS
 from flask_session import Session
+from sqlalchemy.orm import scoped_session
 from tempfile import mkdtemp
 from helpers import is_logged_in
+from models import *
+from database import SessionLocal, Engine
 
+Base.metadata.create_all(bind=Engine)
 app = Flask(__name__)
-
+CORS(app)
 app.config["TEMPLATES_AUTO_RELOAD"] = True
+app.session = scoped_session(SessionLocal, scopefunc=_app_ctx_stack.__ident_func__)
 
 @app.after_request
 def after_request(response):

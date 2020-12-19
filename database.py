@@ -1,41 +1,7 @@
-from sqlalchemy import Column, Integer, String, create_engine, ForeignKey, DateTime
-from sqlalchemy.sql import func
+from sqlalchemy import create_engine
 from sqlalchemy.ext.declarative import declarative_base
-from sqlalchemy.orm import relationship
+from sqlalchemy.orm import sessionmaker
 
+Engine = create_engine("sqlite:///beilo.db", connect_args={"check_same_thread": False})
+SessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=Engine)
 Base = declarative_base()
-Engine = create_engine("sqlite:///", echo=True)
-
-class Users(Base):
-    __tablename__ = "users"
-
-    id = Column(Integer, primary_key=True)
-    name = Column(String, nullable=False)
-    hash = Column(String, nullable=False)
-    salt = Column(String, nullable=False)
-    email = Column(String, nullable=False)
-    creation = Column(DateTime, nullable=False, default=func.current_timestamp())
-
-class Posts(Base):
-    __tablename__ = "posts"
-
-    id = Column(Integer, primary_key=True)
-    user_id = Column(Integer, ForeignKey('users.id'))
-    content = Column(String(255), nullable=False)
-    likes = Column(Integer, nullable=False, default=0)
-    creation = Column(DateTime, nullable=False, default=func.current_timestamp())
-    user = relationship("Users", back_populates="posts")
-
-class Comments(Base):
-    __tablename__ = "comments"
-
-    id = Column(Integer, primary_key=True)
-    post_id = Column(Integer, ForeignKey('posts.id'))
-    content = Column(String(255), nullable=False)
-    likes = Column(Integer, nullable=False, default=0)
-    creation = Column(DateTime, nullable=False, default=func.current_timestamp())
-    post = relationship("Posts", back_populates="comments")
-
-Users.posts = relationship("Posts", order_by=Posts.id, back_populates="user")
-Posts.comments = relationship("Comments", order_by=Comments.id, back_populates="post")
-Base.metadata.create_all(Engine)

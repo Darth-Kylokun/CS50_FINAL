@@ -31,7 +31,7 @@ Session(app)
 @app.route("/")
 @is_logged_in
 def index():
-    username = app.session.query(User.username).filter(User.id == session["user_id"])
+    username = app.session.query(User.username).filter(User.id == session["user_id"]).one()[0]
     return render_template("index.html", name=username)
 
 @app.route("/register", methods=['GET', 'POST'])
@@ -41,31 +41,45 @@ def register():
         if not username:
             flash(u"Please Provide a Username", "danger")
             return render_template("register.html")
+        if not validate_username(username):
+            flash(u"Please Provide a Valid Username")
+            return render_template("register.html")
+
         email = request.form.get("email")
         if not email:
             flash(u"Please Provide a Email", "danger")
             return render_template("register.html")
+        if not validate_email(email):
+            flash(u"Please Provide a Valid Email")
+
         password = request.form.get("password")
         if not password:
             flash(u"Please Provide a Password", "danger")
             return render_template("register.html")
         if not validate_password(password):
             flash(u"Please Provide a Valid Password", "danger")
+            return render_template("register.html")
+
         password_confirm = request.form.get("password_confirm")
         if not password_confirm:
             flash(u"Please Confirm Your Password", "danger")
             return render_template("register.html")
+
         if password != password_confirm:
             flash(u"Make Sure Both of Your Passwords Match", "danger")
-        session["user_id"] = 0
+            return render_template("register.html")
 
         key, salt = gen_hash_and_salt(password)
-        new_user = User(username=username, email=email, hash=key, salt=salt)
-
-        app.session.add(new_user)
-        app.session.commit()
-        user_id = app.session.query(User.id).one_or_none()
-
+        try:
+            new_user = User(username=username, email=email, hash=key, salt=salt)
+            app.session.add(new_user)
+            user_id = app.session.query(User.id).one()
+            app.session.commit()
+        except:
+            app.session.rollback()
+            flash(u"Usernam/Email is already taken", "danger")
+            return render_template("register.html")
+        
         session["user_id"] = user_id
 
         return redirect("/")
@@ -88,11 +102,11 @@ def login():
             key, salt, user_id = app.session.query(User.hash, User.salt, User.id).filter(User.username == username).one()
         except NoResultFound:
             flash(u"Username not Recognized if you Haven't Registered Please Register", "danger")
-            return render_template("register.html")
+            return render_template("login.html")
 
         if not verify_password(password, key, salt):
             flash(u"Incorrect Password", "danger")
-            return render_template("register.html")
+            return render_template("login.html")
 
         session["user_id"] = user_id
         return redirect("/")

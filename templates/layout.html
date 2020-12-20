@@ -10,6 +10,19 @@
         <title>Miska-Net: {% block title %}{% endblock %}</title>
     </head>
     <body>
+        {% with messages = get_flashed_messages(with_categories=true) %}
+            {% if messages %}
+                <header>
+                    {% for category, message in get_flashed_messages %}
+                        <div class="alert alert-{{ category }} border text-center alert-dismissible fade show" role="alert">
+                            {{ message }}
+                            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                        </div>
+                    {% endfor %}
+                </header>
+            {% endif %}
+        {% endwith %}
+
         <main class="container p-6">
             {% block main %}
             {% endblock %}

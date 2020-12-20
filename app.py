@@ -1,4 +1,4 @@
-from flask import Flask, session, render_template, request, _app_ctx_stack
+from flask import Flask, session, render_template, request, _app_ctx_stack, flash, redirect
 from flask_cors import CORS
 from flask_session import Session
 from sqlalchemy.orm import scoped_session
@@ -31,16 +31,30 @@ def index():
     # TODO
     return render_template("index.html")
 
-@app.route("/register", methods=["GET", "POST"])
+@app.route("/register", methods=['GET', 'POST'])
 def register():
     if request.method == "POST":
-        pass
+        username = request.form.get("username")
+        if username is None:
+            flash(u"Please provide a username", "danger")
+            return render_template("register.html")
+        email = request.form.get("email")
+        if email is None:
+            flash(u"Please provide a email", "danger")
+            return render_template("register.html")
+        session["user_id"] = 0
+        return redirect("/")
     else:
         return render_template("register.html")
 
 @app.route("/login", methods=["GET", "POST"])
 def login():
     if request.method == "POST":
-        pass
+        return ""
     else:
         return render_template("login.html")
+
+@app.route("/logout")
+def logout():
+    session.clear()
+    return redirect("/login")

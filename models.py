@@ -7,8 +7,8 @@ class User(Base):
     __tablename__ = "user"
 
     id = Column(Integer, primary_key=True)
-    username = Column(String, nullable=False)
-    email = Column(String, nullable=False)
+    username = Column(String, nullable=False, unique=True)
+    email = Column(String, nullable=False, unique=True)
     hash = Column(String, nullable=False)
     salt = Column(String, nullable=False)
     boards = relationship("Board", back_populates="user")
@@ -20,7 +20,7 @@ class Board(Base):
     user_id = Column(Integer, ForeignKey("user.id"))
     title = Column(String(255), nullable=False)
     description = Column(String(2048))
-    creation = Column(DateTime, default=func.current_timestamp())
+    creation = Column(DateTime(timezone=True), server_default=func.current_timestamp())
     user = relationship("User", back_populates="boards")
     columns = relationship("List", back_populates="board")
 
@@ -31,7 +31,7 @@ class List(Base):
     board_id = Column(Integer, ForeignKey("board.id"))
     title = Column(String(255), nullable=False)
     description = Column(String(1024))
-    creation = Column(DateTime, default=func.current_timestamp())
+    creation = Column(DateTime(timezone=True), default=func.current_timestamp())
     board = relationship("Board", back_populates="columns")
     cards = relationship("Card", back_populates="list")
 
@@ -41,5 +41,5 @@ class Card(Base):
     id = Column(Integer, primary_key=True)
     column_id = Column(Integer, ForeignKey("list.id"))
     content = Column(String(2500), nullable=False)
-    creation = Column(DateTime, default=func.current_timestamp())
-    list = relationship("DateTime", back_populates="cards")
+    creation = Column(DateTime(timezone=True), default=func.current_timestamp())
+    list = relationship("List", back_populates="cards")

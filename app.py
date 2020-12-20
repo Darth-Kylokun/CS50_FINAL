@@ -29,7 +29,7 @@ Session(app)
 @app.route("/")
 @is_logged_in
 def index():
-    # TODO
+    app.session.query(User.username).filter(User.id == session["user_id"])
     return render_template("index.html")
 
 @app.route("/register", methods=['GET', 'POST'])
@@ -60,7 +60,6 @@ def register():
 
         app.session.add(new_user)
         app.session.commit()
-
         user_id = app.session.query(User.id).one()
 
         session["user_id"] = user_id
@@ -84,8 +83,11 @@ def login():
         key, salt = app.session.query(User.hash, User.salt).filter(User.username == username).one()
 
         if not verify_password(password, key, salt):
-            flash(u"")
+            flash(u"Incorrect Password", "danger")
 
+        user_id = app.session.query(User.id).filter(User.username == username).one()
+
+        session["user_id"] = user_id
         return redirect("/")
     else:
         return render_template("login.html")

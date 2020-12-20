@@ -3,15 +3,16 @@ from flask_cors import CORS
 from flask_session import Session
 from sqlalchemy.orm import scoped_session
 from tempfile import mkdtemp
-from helpers import is_logged_in
+from helpers import *
 from models import *
 from database import SessionLocal, Engine
 
 Base.metadata.create_all(bind=Engine)
+
 app = Flask(__name__)
 CORS(app)
-app.config["TEMPLATES_AUTO_RELOAD"] = True
 app.session = scoped_session(SessionLocal, scopefunc=_app_ctx_stack.__ident_func__)
+app.config["TEMPLATES_AUTO_RELOAD"] = True
 
 @app.after_request
 def after_request(response):
@@ -35,14 +36,35 @@ def index():
 def register():
     if request.method == "POST":
         username = request.form.get("username")
-        if username is None:
-            flash(u"Please provide a username", "danger")
+        if not username:
+            flash(u"Please Provide a Username", "danger")
             return render_template("register.html")
         email = request.form.get("email")
-        if email is None:
-            flash(u"Please provide a email", "danger")
+        if not email:
+            flash(u"Please Provide a Email", "danger")
             return render_template("register.html")
+        password = request.form.get("password")
+        if not password:
+            flash(u"Please Provide a Password", "danger")
+            return render_template("register.html")
+        password_confirm = request.form.get("password_confirm")
+        if not password_confirm:
+            flash(u"Please Confirm Your Password", "danger")
+            return render_template("register.html")
+        if password != password_confirm:
+            flash(u"Make Sure Both of Your Passwords Match", "danger")
         session["user_id"] = 0
+
+        key, salt = gen_hash_and_salt(password)
+        new_user = User(username=username, email=email, hash=key, salt=salt)
+
+        app.session.add(new_user)
+        app.session.commit()
+
+        user_id = app.session.query(User.id).one()
+
+        session["user_id"] = user_id
+
         return redirect("/")
     else:
         return render_template("register.html")
@@ -50,7 +72,21 @@ def register():
 @app.route("/login", methods=["GET", "POST"])
 def login():
     if request.method == "POST":
-        return ""
+        username = request.form.get("username")
+        if not username:
+            flash(u"Please Provide a Username", "danger")
+            return render_template("register.html")
+        password = request.form.get("password")
+        if not password:
+            flash(u"Please Provide a Password", "danger")
+            return render_template("register.html")
+        
+        key, salt = app.session.query(User.hash, User.salt).filter(User.username == username).one()
+
+        if not verify_password(password, key, salt):
+            flash(u"")
+
+        return redirect("/")
     else:
         return render_template("login.html")
 
@@ -58,3 +94,7 @@ def login():
 def logout():
     session.clear()
     return redirect("/login")
+
+@app.teardown_appcontext
+def remove_session(*args, **kwargs):
+    app.session.remove()

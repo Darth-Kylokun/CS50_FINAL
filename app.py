@@ -1,7 +1,9 @@
 from flask import Flask, session, render_template, request, _app_ctx_stack, flash, redirect
 from flask_cors import CORS
 from flask_session import Session
+from sqlalchemy.exc import IntegrityError
 from sqlalchemy.orm import scoped_session
+from sqlalchemy.orm.exc import NoResultFound
 from tempfile import mkdtemp
 from helpers import *
 from models import *
@@ -29,8 +31,8 @@ Session(app)
 @app.route("/")
 @is_logged_in
 def index():
-    app.session.query(User.username).filter(User.id == session["user_id"])
-    return render_template("index.html")
+    username = app.session.query(User.username).filter(User.id == session["user_id"])
+    return render_template("index.html", name=username)
 
 @app.route("/register", methods=['GET', 'POST'])
 def register():
@@ -47,6 +49,8 @@ def register():
         if not password:
             flash(u"Please Provide a Password", "danger")
             return render_template("register.html")
+        if not validate_password(password):
+            flash(u"Please Provide a Valid Password", "danger")
         password_confirm = request.form.get("password_confirm")
         if not password_confirm:
             flash(u"Please Confirm Your Password", "danger")
@@ -60,7 +64,7 @@ def register():
 
         app.session.add(new_user)
         app.session.commit()
-        user_id = app.session.query(User.id).one()
+        user_id = app.session.query(User.id).one_or_none()
 
         session["user_id"] = user_id
 
@@ -79,13 +83,16 @@ def login():
         if not password:
             flash(u"Please Provide a Password", "danger")
             return render_template("register.html")
-        
-        key, salt = app.session.query(User.hash, User.salt).filter(User.username == username).one()
+
+        try:
+            key, salt, user_id = app.session.query(User.hash, User.salt, User.id).filter(User.username == username).one()
+        except NoResultFound:
+            flash(u"Username not Recognized if you Haven't Registered Please Register", "danger")
+            return render_template("register.html")
 
         if not verify_password(password, key, salt):
             flash(u"Incorrect Password", "danger")
-
-        user_id = app.session.query(User.id).filter(User.username == username).one()
+            return render_template("register.html")
 
         session["user_id"] = user_id
         return redirect("/")

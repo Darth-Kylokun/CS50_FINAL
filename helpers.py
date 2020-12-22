@@ -29,16 +29,17 @@ def verify_password(password_to_check: str, key: str, salt: str) -> bool:
     return False
 
 def validate_email(email: str) -> bool:
-    if re.fullmatch(r'^[a-z0-9]+[\._]?[a-z0-9]+[@]\w+[.]\w{2,3}$', email):
+    if re.match(r'^[a-z0-9]+[\._]?[a-z0-9]+[@]\w+[.]\w{2,}$', email):
         return True
     return False
 
 def validate_password(password: str) -> bool:
-    if re.fullmatch(r'[A-Za-z0-9@#$%^&+=]{8,}', password):
+    if re.fullmatch(r'^(?=.*?[A-Z])(?=.*?[a-z])(?=.*?[0-9])(?=.*?[#?!@$%^&*-.]).{8,}$', password):
+        print("pass")
         return True
     return False
 
 def validate_username(username: str) -> bool:
-    if re.fullmatch(r"^(?=.{8,20}$)(?![_.])(?!.*[_.]{2})[a-zA-Z0-9._]+(?<![_.])$", username):
+    if re.match(r"^(?=.{8,20}$)(?![_.])(?!.*[_.]{2})[a-zA-Z0-9._]+(?<![_.])$", username):
         return True
     return False

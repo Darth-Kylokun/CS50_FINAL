@@ -12,28 +12,40 @@
                 <div class="row mb-3">
                     <label for="usernameInput" class="col-sm-2 col-form-label">Username:</label>
                     <div class="col-sm-10">
-                        <input autocomplete="off" autofoucs class="form-control" id="usernameInput" name="username" type="text">
+                        <input autocomplete="off" autofoucs class="form-control" id="usernameInput" name="username" type="text" aria-describedby="usernameLabel">
+                        <div id="usernameLabel" class="form-text">
+                            Your username must be bewteen 8 and 20 characters.
+                        </div>
                     </div>
                 </div>
                 <div class="row mb-3">
                     <label for="emailInput" class="col-sm-2 col-form-label">Email:</label>
                     <div class="col-sm-10">
-                        <input autocomplete="off" class="form-control" id="emailInput" name="email" type="emial">
+                        <input autocomplete="off" class="form-control" id="emailInput" name="email" type="emial" aria-describedby="emailLabel">
+                        <div id="emailLabel" class="form-text">
+                            Please enter in a valid email
+                        </div>
                     </div>
                 </div>
                 <div class="row mb-3">
                     <label for="passwordInput" class="col-sm-2 col-form-label">Password:</label>
                     <div class="col-sm-10">
-                        <input autocomplete="off" class="form-control" name="password" id="passwordInput" type="password">
+                        <input autocomplete="off" class="form-control" name="password" id="passwordInput" type="password" aria-describedby="passwordLabel">
+                        <div id="passwordLabel" class="form-text">
+                            Your password must have a minimum of 8 charactersm at least one uppercase letter, one lowercase letter, one number, and one special character.
+                        </div>
                     </div>
                 </div>
                 <div class="row mb-3">
                     <label for='passwordConfirm' class="col-sm-2 col-form-label">Password (Again)</label>
                     <div class="col-sm-10">
-                        <input autocomplete="off" class="form-control" name="password_confirm" id="passwordConfirm" type="password">
+                        <input autocomplete="off" class="form-control" name="password_confirm" id="passwordConfirm" type="password" aria-describedby="passwordConfirmLabel">
+                        <div id="passwordConfirmLabel" class="form-text">
+                            Please confirm your password
+                        </div>
                     </div>
                 </div>
-                <button class="btn btn-danger" type="submit">Register</button>
+                <button class="btn btn-primary" type="submit">Register</button>
             </form>
         </div>
         <div class="card-footer">

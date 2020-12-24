@@ -63,17 +63,48 @@ def boards():
         boards = app.session.query(Board.id, Board.title, Board.description).filter(Board.user_id == session["user_id"]).all()
         return render_template("boards.html", boards=boards)
 
-@app.route("/openBoard", methods=["POST"])
+@app.route("/deleteOrOpenBoard", methods=["POST"])
 @is_logged_in
-def open_board():
-    board_id_to_pass = request.form.get("board_to_open")
-    return redirect(f"/boards/{board_id_to_pass}")
+def open_or_delete_board():
+    board_id = request.form.get("board_to_open")
+    if not board_id:
+        board_id = request.form.get("board_to_close")
+        board_to_delete = app.session.query(Board).filter(Board.id == int(board_id)).delete()
+        app.session.commit()
+        flash(u"Succesfully Deleted Board", "success")
+        return redirect("/boards")
+    
+    return redirect(f"/boards/{board_id}")
+
+@app.route("/addList/<int:board_id>", methods=["POST"])
+@is_logged_in
+def add_list(board_id):
+    title = request.form.get("title_input")
+    if not title:
+        flash(u"Please Provide a Title", "danger")
+        return redirect(f"boards/{board_id}")
+    description = request.form.get("description_input")
+    board_list = List(board_id=board_id, title=title, description=description)
+    app.session.add(board_list)
+    app.session.commit()
+    return redirect(f"/boards/{board_id}")
 
 @app.route("/boards/<int:board_id>")
 @is_logged_in
 def board(board_id):
-    title = app.session.query(Board.title).filter(and_(Board.user_id == session["user_id"], Board.id == board_id)).one()
-    return 'Id %d' % board_id
+    title = app.session.query(Board.title).filter(and_(Board.user_id == session["user_id"], Board.id == board_id)).one()[0]
+    content = {}
+    try:
+        lists = app.session.query(List.id, List.title, List.description, Card.id, Card.content).filter(and_(List.board_id == board_id, Card.list_id == List.id)).all()
+
+        print(lists)
+
+        for list_id, list_title, list_desc, card_id, card_content in lists:
+            content[list_title] = (list_id, list_desc, (card_id, card_content))
+    except ValueError:
+        pass
+
+    return render_template("board.html", title=title, content=content, board_id=board_id)
 
 @app.route("/register", methods=['GET', 'POST'])
 def register():

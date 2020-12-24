@@ -7,13 +7,13 @@
 {% block main %}
 
 {% for board_id, title, description in boards %}
-    <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#board{{ board_id }}">
+    <button type="button" class="btn btn-success mb-3" data-bs-toggle="modal" data-bs-target="#board{{ board_id }}">
         {{ title }}
     </button>
 
     <div class="modal fade" id="board{{ board_id }}" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="board{{ board_id }}Title" aria-hidden="true">
         <div class="modal-dialog">
-            <form action="/openBoard" method="POST">
+            <form action="/deleteOrOpenBoard" method="POST">
                 <div class="modal-content">
                     <div class="modal-header">
                         <h5 class="modal-title" id="board{{ board_id }}Title">{{ title }}</h5>
@@ -22,8 +22,9 @@
                         <p>{{ description }}</p>
                     </div>
                     <div class="modal-footer">
-                        <button type="button" class="btn btn-danger" data-bs-dismiss="modal">Close</button>
-                        <button type="submit" class="btn btn-success" name="board_to_open" value="{{ board_id }}">Open</button>
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                        <button type="submit" class="btn btn-danger" name="board_to_close" value="{{ board_id }}">Delete</button>
+                        <button type="submit" class="btn btn-primary" name="board_to_open" value="{{ board_id }}">Open</button>
                     </div>
                 </div>
             </form>
@@ -31,7 +32,7 @@
     </div>
 {% endfor %}
 
-<button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#boardCreationModal">
+<button type="button" class="btn btn-primary mb-3" data-bs-toggle="modal" data-bs-target="#boardCreationModal">
     Create New Board
 </button>
 

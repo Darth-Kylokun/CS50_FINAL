@@ -39,7 +39,7 @@ class Card(Base):
     __tablename__ = "card"
 
     id = Column(Integer, primary_key=True)
-    column_id = Column(Integer, ForeignKey("list.id"))
+    list_id = Column(Integer, ForeignKey("list.id"))
     content = Column(String(1024), nullable=False)
     creation = Column(DateTime(timezone=True), server_default=func.current_timestamp())
     list = relationship("List", back_populates="cards")

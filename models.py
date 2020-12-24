@@ -30,16 +30,5 @@ class List(Base):
     id = Column(Integer, primary_key=True)
     board_id = Column(Integer, ForeignKey("board.id"))
     title = Column(String(255), nullable=False)
-    description = Column(String(1024))
-    creation = Column(DateTime(timezone=True), default=func.current_timestamp())
+    description = Column(String(2048))
     board = relationship("Board", back_populates="columns")
-    cards = relationship("Card", back_populates="list")
-
-class Card(Base):
-    __tablename__ = "card"
-
-    id = Column(Integer, primary_key=True)
-    column_id = Column(Integer, ForeignKey("list.id"))
-    content = Column(String(2500), nullable=False)
-    creation = Column(DateTime(timezone=True), default=func.current_timestamp())
-    list = relationship("List", back_populates="cards")

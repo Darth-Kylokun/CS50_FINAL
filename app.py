@@ -1,6 +1,7 @@
 from flask import Flask, session, render_template, request, _app_ctx_stack, flash, redirect
 from flask_cors import CORS
 from flask_session import Session
+from sqlalchemy import and_
 from sqlalchemy.exc import IntegrityError
 from sqlalchemy.orm import scoped_session
 from sqlalchemy.orm.exc import NoResultFound
@@ -34,6 +35,72 @@ def index():
     username = app.session.query(User.username).filter(User.id == session["user_id"]).one()[0]
     return render_template("index.html", name=username)
 
+@app.route("/boards", methods=['GET', 'POST'])
+@is_logged_in
+def boards():
+    if request.method == "POST":
+        title = request.form.get("title_input")
+        if not title:
+            flash(u"Please Provide a Title For Your Board", "danger")
+            return render_template("/boards.html")
+        
+        description = request.form.get("description_input")
+        user_id = session["user_id"]
+
+        board = Board(user_id=user_id, title=title, description=description)
+
+        try:
+            app.session.add(board)
+            app.session.commit()            
+        except:
+            app.session.rollback()
+            flash(u"You done goofed up now", "danger")
+            return render_template("boards.html")
+        
+        board_id = app.session.query(Board.id).filter(and_(Board.user_id == session["user_id"], Board.title == title)).one()[0]
+        return redirect(f"boards/{board_id}")
+    else:
+        boards = app.session.query(Board.id, Board.title, Board.description).filter(Board.user_id == session["user_id"]).all()
+        return render_template("boards.html", boards=boards)
+
+@app.route("/deleteOrOpenBoard", methods=["POST"])
+@is_logged_in
+def open_or_delete_board():
+    board_id = request.form.get("board_to_open")
+    if not board_id:
+        board_id = request.form.get("board_to_close")
+        board_to_delete = app.session.query(Board).filter(Board.id == int(board_id)).delete()
+        app.session.commit()
+        flash(u"Succesfully Deleted Board", "success")
+        return redirect("/boards")
+    
+    return redirect(f"/boards/{board_id}")
+
+@app.route("/addList/<int:board_id>", methods=["POST"])
+@is_logged_in
+def add_list(board_id):
+    title = request.form.get("title_input")
+    if not title:
+        flash(u"Please Provide a Title", "danger")
+        return redirect(f"boards/{board_id}")
+    description = request.form.get("description_input")
+    board_list = List(board_id=board_id, title=title, description=description)
+    app.session.add(board_list)
+    app.session.commit()
+    return redirect(f"/boards/{board_id}")
+
+@app.route("/boards/<int:board_id>")
+@is_logged_in
+def board(board_id):
+    title = app.session.query(Board.title).filter(and_(Board.user_id == session["user_id"], Board.id == board_id)).one()[0]
+    try:
+        lists = app.session.query(List.id, List.title, List.description).filter(List.board_id == board_id, ).all()
+        print(lists)
+    except ValueError:
+        pass
+
+    return render_template("board.html", title=title, lists=lists, board_id=board_id)
+
 @app.route("/register", methods=['GET', 'POST'])
 def register():
     if request.method == "POST":
@@ -51,6 +118,7 @@ def register():
             return render_template("register.html")
         if not validate_email(email):
             flash(u"Please Provide a Valid Email")
+            return render_template("register.html")
 
         password = request.form.get("password")
         if not password:
@@ -73,13 +141,13 @@ def register():
         try:
             new_user = User(username=username, email=email, hash=key, salt=salt)
             app.session.add(new_user)
-            user_id = app.session.query(User.id).one()
             app.session.commit()
-        except:
+        except IntegrityError:
             app.session.rollback()
-            flash(u"Usernam/Email is already taken", "danger")
+            flash(u"Username/Email is already taken", "danger")
             return render_template("register.html")
         
+        user_id = app.session.query(User.id).filter(User.username == username).one()[0]
         session["user_id"] = user_id
 
         return redirect("/")

@@ -89,13 +89,28 @@ def add_list(board_id):
     app.session.commit()
     return redirect(f"/boards/{board_id}")
 
+@app.route("/editList/<int:board_id>", methods=["POST"])
+@is_logged_in
+def edit_list(board_id):
+    title = request.form.get("title_edit")
+    print(title)
+    if not title:
+        flash(u"Please Make Sure You Have a Title", "danger")
+        return redirect(f"/board/{board_id}")
+    description = request.form.get("description_edit")
+    list_id = int(request.form.get("list_id"))
+
+    app.session.query(List).filter(List.id == list_id).update({List.title: title, List.description: description}, synchronize_session = False)
+    app.session.commit()
+
+    return redirect(f"/boards/{board_id}")
+
 @app.route("/boards/<int:board_id>")
 @is_logged_in
 def board(board_id):
     title = app.session.query(Board.title).filter(and_(Board.user_id == session["user_id"], Board.id == board_id)).one()[0]
     try:
         lists = app.session.query(List.id, List.title, List.description).filter(List.board_id == board_id, ).all()
-        print(lists)
     except ValueError:
         pass
 

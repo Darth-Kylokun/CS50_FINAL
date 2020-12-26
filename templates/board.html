@@ -5,14 +5,6 @@
 {% endblock %}
 
 {% block main %}
-    <script>
-        $(function() {
-            $("#addContent").click(function() {
-                $.post("/addContent", {})
-            });
-        });
-    </script>
-
     <div class="row row-cols-1 row-cols-md-3 g-4">
     {% for list_id, list_title, list_description in lists %}
         <div class="col">
@@ -29,20 +21,24 @@
 
         <div class="modal fade" id="list{{ list_id }}" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="list{{ list_id }}Title" aria-hidden="true">
             <div class="modal-dialog">
-                <form action="/addCard" method="POST">
+                <form action="/editList/{{ board_id }}" method="POST">
                     <div class="modal-content">
                         <div class="modal-header">
-                            <h5 class="modal-title" id="list{{ list_id }}Title">Add a New Card</h5>
+                            <h5 class="modal-title" id="list{{ list_id }}Title">Edit Post:</h5>
                         </div>
                         <div class="modal-body">
                             <div class="mb-3">
-                                <label for="contentInput" class="form-label">Content:</label>
-                                <input type="text" class="form-control form-control-lg" id="contentInput" name="content_input" placeholder="Content">
+                                <label for="titleEdit" class="form-label">Title</label>
+                                <input type="text" class="form-control form-control-lg" id="titleEdit" name="title_edit" placeholder="Title" value="{{ list_title }}"" maxlength="255">
+                            </div>
+                            <div class="mb-3">
+                                <label for="descriptionEdit" class="form-label">Description</label>
+                                <textarea class="form-control form-control-lg" id="descriptionEdit" name="description_edit" placesholder="Description" maxlength="2048">{{ list_description }}</textarea>
                             </div>
                         </div>
                         <div class="modal-footer">
                             <button type="button" class="btn btn-danger" data-bs-dismiss="modal">Cancel</button>
-                            <button type="submit" class="btn btn-primary">Add</button>
+                            <button type="submit" class="btn btn-primary" name="list_id" value="{{ list_id }}">Edit</button>
                         </div>
                     </div>
                 </form>
@@ -65,7 +61,7 @@
                     <div class="modal-body">
                         <div class="mb-3">
                             <label for="titleInput" class="form-label">Title:</label>
-                            <input type="text" class="form-control form-control-lg" id="titleInput" name="title_input" placeholder="Title">
+                            <input type="text" class="form-control form-control-lg" id="titleInput" name="title_input" placeholder="Title" maxlength="255">
                         </div>
                         <div class="mb-3">
                             <label for="descriptionInput" class="form-label">Description:</label>

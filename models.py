@@ -29,6 +29,7 @@ class List(Base):
 
     id = Column(Integer, primary_key=True)
     board_id = Column(Integer, ForeignKey("board.id"))
+    list_position = Column(Integer, nullable=False)
     title = Column(String(255), nullable=False)
     description = Column(String(2048))
     board = relationship("Board", back_populates="columns")

@@ -35,7 +35,6 @@ def validate_email(email: str) -> bool:
 
 def validate_password(password: str) -> bool:
     if re.fullmatch(r'^(?=.*?[A-Z])(?=.*?[a-z])(?=.*?[0-9])(?=.*?[#?!@$%^&*-.]).{8,}$', password):
-        print("pass")
         return True
     return False
 

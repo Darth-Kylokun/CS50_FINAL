@@ -5,48 +5,7 @@
 {% endblock %}
 
 {% block main %}
-    <style>
-          .toggle {
-    position: absolute;
-    top: 50%;
-    right: 0;
-    margin-top: -8px;
-  }
-  .placeholder {
-    border: 1px dotted black;
-    margin: 0 1em 1em 0;
-    height: 50px;
-  }
-    </style>
-    <script>
-        $(function() {
-            $(".col").sortable({
-                connectWith: ".col",
-                handle: ".card-body",
-                cancel: ".toggle",
-                placeholder: ".placeholder"
-            });
-            $(".col").on("click", function() {
-                var icon = $(this);
-                icon.closest(".card").find("card-title").toggle();
-            });
-            $(".col").on("sortreceive", function(event, ui) {
-                event.preventDefault();
-                word_to_int = {
-                    "one": "1",
-                    "two": "2",
-                    "three": "3"
-                }
-                $.post({
-                    url: "/modListPos",
-                    data: JSON.stringify({"list_id": ui.item.attr("id"), "new_col_id": word_to_int[ui.item.parent().attr("id")]}),
-                    contentType: "application/json; charset=utf-8",
-                    dataType: "json",
-                });
-            });
-        });
-    </script>
-
+    <script src="/static/board.min.js"></script>
 
     <div class="card mt-3">
         <div class="card-body">
@@ -139,7 +98,7 @@
                     {% for list_id, list_title, list_description in list_three %}
                         <div class="modal fade" id="list{{ list_id }}" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="list{{ list_id }}Title" aria-hidden="true">
                             <div class="modal-dialog">
-                                <form action="/modifyList/{{ board_id }}" method="POST">
+                                <form action="/modifyList/{{ board_id }}" method="POST" class="modify_list">
                                     <div class="modal-content">
                                         <div class="modal-header">
                                             <h5 class="modal-title" id="list{{ list_id }}Title">Edit Post:</h5>
@@ -147,7 +106,7 @@
                                         <div class="modal-body">
                                             <div class="mb-3">
                                                 <label for="titleEdit" class="form-label">Title</label>
-                                                <input type="text" class="form-control form-control-lg" id="titleEdit" name="title_edit" placeholder="Title" value="{{ list_title }}"" maxlength="255">
+                                                <input type="text" class="form-control form-control-lg" id="titleEdit" name="title_edit" placeholder="Title" value="{{ list_title }}" maxlength="255">
                                             </div>
                                             <div class="mb-3">
                                                 <label for="descriptionEdit" class="form-label">Description</label>
@@ -157,13 +116,13 @@
                                         <div class="modal-footer">
                                             <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
                                             <button type="submit" class="btn btn-danger" name="list_id_to_delete" value="{{ list_id }}">Delete</button>
-                                            <button type="submit" class="btn btn-primary" name="list_id" value="{{ list_id }}">Edit</button>
+                                            <button type="submit" class="btn btn-primary" value="{{ list_id }}">Edit</button>
                                         </div>
                                     </div>
                                 </form>
                             </div>
                         </div>
-        
+
                         <div class="card" id="{{ list_id }}">
                             <div class="card-body">
                                 <h5 class="card-title">{{ list_title }}</h5><span class="toggle"></span>
@@ -185,7 +144,7 @@
 
     <div class="modal fade" id="listCreationModal" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="listCreationModalTitle" aria-hidden="false">
         <div class="modal-dialog">
-            <form action="/addList/{{ board_id }}" method="POST">
+            <form action="/addList/{{ board_id }}" method="POST" id="create_list">
                 <div class="modal-content">
                     <div class="modal-header">
                         <h5 class="modal-title" id="listCreationModalTitle">Create a New List</h5>

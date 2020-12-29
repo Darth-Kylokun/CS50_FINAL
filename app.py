@@ -104,7 +104,7 @@ def add_list(board_id):
     app.session.add(board_list)
     app.session.commit()
 
-    return jsonify({"url_for_mod": f"/modifyList/{board_id}", "board_id": board_id, "list_id": board_list.id, "list_title": title, "list_desc": description})
+    return jsonify({"board_id": board_id, "list_id": board_list.id, "list_title": title, "list_desc": description})
 
 @app.route("/modifyList/<int:board_id>", methods=["POST"])
 @is_logged_in
@@ -119,12 +119,12 @@ def modify_list(board_id):
         app.session.query(List).filter(List.id == list_id).update({List.title: title, List.description: description})
         app.session.commit()
 
-        return jsonify({"list_id": list_id})
+        return jsonify({})
     else:
         app.session.query(List).filter(List.id == list_id).delete()
         app.session.commit()
 
-        return ""
+        return jsonify({})
 
 @app.route("/boards/<int:board_id>")
 @is_logged_in

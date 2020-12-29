@@ -95,40 +95,36 @@ def open_or_delete_board():
 @app.route("/addList/<int:board_id>", methods=["POST"])
 @is_logged_in
 def add_list(board_id):
-    title = request.form.get("title_input")
-    if not title:
-        flash(u"Please Provide a Title", "danger")
-        return redirect(f"/boards/{board_id}")
-    description = request.form.get("description_input")
+    data = request.get_json()
+    title = data["title"]
+    description = data["description"]
+
     board_list = List(board_id=board_id, title=title, description=description, list_position=1)
+    
     app.session.add(board_list)
     app.session.commit()
-    return redirect(f"/boards/{board_id}")
+
+    return jsonify({"url_for_mod": f"/modifyList/{board_id}", "board_id": board_id, "list_id": board_list.id, "list_title": title, "list_desc": description})
 
 @app.route("/modifyList/<int:board_id>", methods=["POST"])
 @is_logged_in
 def modify_list(board_id):
-    list_id = request.form.get("list_id_to_delete")
+    data = request.get_json()
+    list_id = data["list_id"]
 
-    if not list_id:
-        title = request.form.get("title_edit")
-        print(title)
-        if not title:
-            flash(u"Please Make Sure You Have a Title", "danger")
-            return redirect(f"/boards/{board_id}")
-        description = request.form.get("description_edit")
-        list_id = int(request.form.get("list_id"))
+    if not data["to_delete"]:
+        title = data["title"]
+        description = data["desc"]
 
-        app.session.query(List).filter(List.id == list_id).update({List.title: title, List.description: description}, synchronize_session = False)
+        app.session.query(List).filter(List.id == list_id).update({List.title: title, List.description: description})
         app.session.commit()
 
-        return redirect(f"/boards/{board_id}")
+        return jsonify({"list_id": list_id})
     else:
         app.session.query(List).filter(List.id == list_id).delete()
         app.session.commit()
 
-        flash(u"Succesfully Deleted List", "success")
-        return redirect(f"/boards/{board_id}")
+        return ""
 
 @app.route("/boards/<int:board_id>")
 @is_logged_in

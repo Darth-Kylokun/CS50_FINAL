@@ -29,8 +29,6 @@ $(document).on("sortreceive", ".col", function(event, ui) {
 
 $(document).on("submit", "form", function(event) {
     event.preventDefault();
-        
-    alert("uwU");
 
     const form = $(this);
 
@@ -126,8 +124,6 @@ $(document).on("submit", "form", function(event) {
         else {
             const title = form.find("input").val();
             const desc = form.find("textarea").val();
-
-            alert(`${list_id} ${title} ${desc}`);
 
             if (title === "") {
                 $(`#list${list_id}`).modal('hide');

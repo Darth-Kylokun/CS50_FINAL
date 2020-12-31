@@ -5,40 +5,75 @@
 {% endblock %}
 
 {% block main %}
+<script src="/static/boards.min.js"></script>
 
+<div class="card mt-3">
+    <div class="card-body">
+        <h1 class="card-title">Welcome back, {{ username }}!</h1>
+        <hr>
+        <h3 class="card-title">Boards:</h3>
 {% for board_id, title, description in boards %}
-    <button type="button" class="btn btn-success mb-3" data-bs-toggle="modal" data-bs-target="#board{{ board_id }}">
-        {{ title }}
-    </button>
+    
+        <button type="button" class="btn btn-success mb-3" data-bs-toggle="modal" data-bs-target="#board{{ board_id }}">
+            {{ title }}
+        </button>
 
-    <div class="modal fade" id="board{{ board_id }}" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="board{{ board_id }}Title" aria-hidden="true">
-        <div class="modal-dialog">
-            <form action="/deleteOrOpenBoard" method="POST">
-                <div class="modal-content">
-                    <div class="modal-header">
-                        <h5 class="modal-title" id="board{{ board_id }}Title">{{ title }}</h5>
+        <div class="modal fade" id="board{{ board_id }}" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="board{{ board_id }}Title" aria-hidden="true">
+            <div class="modal-dialog">
+                <form class="form-modal" action="/modifyBoard" method="POST">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h5 class="modal-title" id="board{{ board_id }}Title">{{ title }}</h5>
+                        </div>
+                        <div class="modal-body">
+                            <p>{{ description }}</p>
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                            <button type="submit" class="btn btn-danger" name="board_to_close" value="{{ board_id }}">Delete</button>
+                            <button type="button" class="btn btn-warning" data-bs-dismiss="modal" value="{{ board_id }}">Edit</button>
+                            <button type="submit" class="btn btn-primary" name="board_to_open" value="{{ board_id }}">Open</button>
+                        </div>
                     </div>
-                    <div class="modal-body">
-                        <p>{{ description }}</p>
-                    </div>
-                    <div class="modal-footer">
-                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                        <button type="submit" class="btn btn-danger" name="board_to_close" value="{{ board_id }}">Delete</button>
-                        <button type="submit" class="btn btn-primary" name="board_to_open" value="{{ board_id }}">Open</button>
-                    </div>
-                </div>
-            </form>
+                </form>
+            </div>
         </div>
-    </div>
-{% endfor %}
 
-<button type="button" class="btn btn-primary mb-3" data-bs-toggle="modal" data-bs-target="#boardCreationModal">
+        <div class="modal fade" id="boardEdit{{ board_id }}" data-bs-backdrop="staic" data-bs-keyboard="false" tabindex="-1" aria-labelledby="boardEdit{{ board_id }}Title" aria-hidden="true">
+            <div class="modal-dialog">
+                <form class="form-modal" action="/modifyBoard" method="POST">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h5 class="modal-title" id="boardEdit{{ board_id }}Title">Edit Board:</h5>
+                        </div>
+                        <div class="modal-body">
+                            <div class="mb-3">
+                                <label for="titleEdit" class="form-label">Title:</label>
+                                <input type="text" class="form-control form-control-lg" id="titleEdit" placeholder="Title" value="{{ title }}">
+                            </div>
+                            <div class="mb-3">
+                                <lable for="descEdit" clas=="form-label">Description</lable>
+                                <textarea class="form-control form-control-lg" id="descEdit">{{ description }}</textarea>
+                            </div>
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                            <button type="submit" class="btn btn-primary" name="board_to_edit" value="{{ board_id }}">Edit</button>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+{% endfor %}
+    </div>
+</div>
+<button type="button" class="btn btn-primary mt-3" data-bs-toggle="modal" data-bs-target="#boardCreationModal">
     Create New Board
 </button>
 
 <div class="modal fade" id="boardCreationModal" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="boardCreationTitle" aria-hidden="true">
     <div class="modal-dialog">
-        <form action="/boards" method="POST">
+        <form action="/" method="POST">
             <div class="modal-content">
                 <div class="modal-header">
                     <h5 class="modal-title" id="boardCreationTitle">Create a New Board</h5>
